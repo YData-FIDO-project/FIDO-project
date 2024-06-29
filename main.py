@@ -9,7 +9,16 @@ import pandas as pd
 
 from utils.project_utils import matching_category, matching_name
 
-...
+def main(file, name: str, category: str):
+    """Validating the input document
+
+    :param file: file uploaded by the customer
+    :param name: customer name in the database
+    :param category: category under which the document was uploaded in the app
+
+    :returns: document text, predicted category, prediction softmax score, category match (bool), name match (bool)
+    """
+    pass
 
 if __name__ == '__main__':
     fire.Fire(main)
