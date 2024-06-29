@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 
 from utils.project_utils import matching_category, matching_name
+from consts_and_weights.categories import ALL_CATEGORIES_LIST
 
 def main(file, name: str, category: str):
     """Validating the input document
