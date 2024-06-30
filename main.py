@@ -21,6 +21,9 @@ def main(file, name: str, category: str):
 
     :returns: document text, predicted category, prediction softmax score, category match (bool), name match (bool)
     """
+
+    assert category in ALL_CATEGORIES_LIST, "Unknown category; manual labeling required"
+
     pass
 
 
