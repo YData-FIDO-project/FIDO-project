@@ -11,6 +11,7 @@ from utils.project_utils import matching_category, matching_name
 from utils.text_extraction import extracting_text_from_image
 from consts_and_weights.categories import ALL_CATEGORIES_LIST
 
+
 def main(file, name: str, category: str):
     """Validating the input document
 
@@ -21,6 +22,7 @@ def main(file, name: str, category: str):
     :returns: document text, predicted category, prediction softmax score, category match (bool), name match (bool)
     """
     pass
+
 
 if __name__ == '__main__':
     fire.Fire(main)

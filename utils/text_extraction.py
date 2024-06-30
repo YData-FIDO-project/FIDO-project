@@ -3,15 +3,16 @@ Extracting text from images (currently with the use of Pytesseract)
 """
 
 # TODO: clean up the imports
-import os
+# import os
 import numpy as np
-import pandas as pd
+# import pandas as pd
 import re
 # from PIL import Image
 import cv2
 import pytesseract
 
 CONFIDENCE_THRESHOLD = 2  # from the tutorial
+
 
 def extracting_text_from_image(img: np.array):
     """
@@ -43,10 +44,10 @@ def extracting_text_from_image(img: np.array):
         # extracting text
         text = pytesseract.image_to_string(img)
         if text:  # not an empty string
-          return text
+            return text
         else:
-          print("Failed to extract the text")
-          return None
+            print("Failed to extract the text")
+            return None
 
     except Exception as e:
         print(f"Error processing image {img}: {e}")
