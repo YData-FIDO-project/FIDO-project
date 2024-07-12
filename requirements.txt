@@ -1,0 +1,14 @@
+fire==0.6.0
+matplotlib==3.7.5
+numpy==1.23.1
+numpy==1.24.4
+pandas==2.2.2
+Pillow==10.1.0
+Pillow==10.4.0
+pytesseract==0.3.10
+rapidfuzz==3.9.4
+scikit_learn==1.5.1
+seaborn==0.13.2
+torch==2.1.1
+torchvision==0.16.1
+transformers==4.42.4
