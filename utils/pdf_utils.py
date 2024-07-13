@@ -21,18 +21,22 @@ def converting_pdf_to_jpg(file_path: str, output_dir: str = 'outputs'):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    # file_name = file_path.split('/')[-1].lower().replace('.pdf', '')
-    file_name = os.path.splitext(os.path.basename(file_path))[0].lower()
-    image = convert_from_path(file_path)
-    all_image_paths = []
+    try:
+        file_name = os.path.splitext(os.path.basename(file_path))[0].lower()
+        image = convert_from_path(file_path)
+        all_image_paths = []
 
-    for n, img in enumerate(image):
-        file_name = f'{file_name}_page_{n + 1}.jpg'
-        image_path = os.path.join(output_dir, file_name)
-        img.save(image_path, 'JPEG')
-        all_image_paths.append(image_path)
+        for n, img in enumerate(image):
+            file_name = f'{file_name}_page_{n + 1}.jpg'
+            image_path = os.path.join(output_dir, file_name)
+            img.save(image_path, 'JPEG')
+            all_image_paths.append(image_path)
 
-    return all_image_paths
+        print('Converted PDF to JPG')
+        return all_image_paths
+    except Exception as e:
+        print(f'Failed to convert the document: {e}')
+        return []
 
 
 def extracting_text_from_pdf(file_path) -> str:
@@ -60,4 +64,3 @@ def extracting_text_from_pdf(file_path) -> str:
     except Exception as e:
         print(f"Error extracting text from PDF {file_path}: {e}")
         return None
-

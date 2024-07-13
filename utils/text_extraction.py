@@ -22,7 +22,7 @@ def extracting_text_from_image(img: np.array):
 
     :param img: image open as a numpy array
 
-    returns: text (string)
+    :returns: text (string)
     """
   
     try:
@@ -30,14 +30,15 @@ def extracting_text_from_image(img: np.array):
         meta = pytesseract.image_to_osd(img, config=' — psm 0')
         angle = int(re.search(r'Orientation in degrees: \d+', meta).group().split(':')[-1].strip())
         confidence = float(re.search(r'Orientation confidence: \d+', meta).group().split(':')[-1].strip())
+        print(f'Orientation: {angle}, confidence: {confidence}')
         # rotating only images with confidence > threshold (default 2):
-        if angle == 90 and confidence > CONFIDENCE_THRESHOLD:
+        if angle == 90 and confidence >= CONFIDENCE_THRESHOLD:
             img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
             print('- Image rotated')
-        elif angle == 180 and confidence > CONFIDENCE_THRESHOLD:
+        elif angle == 180 and confidence >= CONFIDENCE_THRESHOLD:
             img = cv2.rotate(img, cv2.ROTATE_180)
             print('- Image rotated')
-        elif angle == 270 and confidence > CONFIDENCE_THRESHOLD:
+        elif angle == 270 and confidence >= CONFIDENCE_THRESHOLD:
             img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
             print('- Image rotated!')
 
@@ -50,5 +51,5 @@ def extracting_text_from_image(img: np.array):
             return None
 
     except Exception as e:
-        print(f"Error processing image {img}: {e}")
+        print(f"Error processing current image: {e}")
         return None
