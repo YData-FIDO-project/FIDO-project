@@ -11,6 +11,8 @@ from utils.project_utils import matching_category, matching_name
 from utils.text_extraction import extracting_text_from_image
 from consts_and_weights.categories import ALL_CATEGORIES_LIST
 
+# TODO: query the AWS S3
+
 
 def main(file, name: str, category: str):
     """Validating the input document
