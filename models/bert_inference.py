@@ -17,9 +17,9 @@ def BERT_inference(document: str, path_to_weights: str = PATH_TO_WEIGHTS,
     """
     Classifying provided document
 
+    :param document: document to classify (string)
     :param model_name: model name
     :param path_to_weights: path to saved model weights
-    :param document: document to classify
     :param label_dict: dictionary with category names (digit to label)
 
     :returns: category (digit), softmax score
@@ -36,12 +36,15 @@ def BERT_inference(document: str, path_to_weights: str = PATH_TO_WEIGHTS,
     model = BERTClassifier(bert_model_name=model_name,
                            num_classes=n_classes
                        ).to(device)
+    print(f'Downloaded model: {model_name}')
 
     # using pretrained weights
     model.load_state_dict(torch.load(path_to_weights, map_location=device))
+    print(f'Downloaded pretrained weights')
 
     # initializing the tokenizer
     tokenizer = BertTokenizer.from_pretrained(model_name)
+    print(f'Initialized the tokenizer for: {model_name}')
 
     model.eval()
 
@@ -51,6 +54,7 @@ def BERT_inference(document: str, path_to_weights: str = PATH_TO_WEIGHTS,
                        padding=True, max_length=512)
     input_ids = inputs['input_ids'].to(device)
     attention_mask = inputs['attention_mask'].to(device)
+    print(f'Tokenized input file')
 
     with torch.no_grad():
         outputs = model(input_ids=input_ids, attention_mask=attention_mask)
@@ -63,4 +67,3 @@ def BERT_inference(document: str, path_to_weights: str = PATH_TO_WEIGHTS,
     print(f'Prediction: {label_dict[predicted_category]} ({probability :,.3f}) ')
 
     return predicted_category, probability
-
