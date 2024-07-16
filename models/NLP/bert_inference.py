@@ -4,7 +4,7 @@ Inference on BERT model
 import torch
 from transformers import BertTokenizer
 
-from models.BERT_classifier import BERTClassifier
+from models.NLP.BERT_classifier import BERTClassifier
 from consts_and_weights.labels import CATEGORY_NAME_DICT
 
 BERT_MODEL_NAME = 'bert-base-uncased'
