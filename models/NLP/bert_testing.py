@@ -6,19 +6,19 @@ Code for training BERT model
 import numpy as np
 import pandas as pd
 import torch
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader
 from transformers import BertTokenizer
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 from models.NLP.BERT_classifier import BertDataset, BERTClassifier
 from consts_and_weights.labels import CATEGORY_NAME_DICT
+from utils.evaluation_utils import *
 
 BERT_MODEL_NAME = 'bert-base-uncased'
 PATH_TO_WEIGHTS = 'consts_and_weights/bert_13classes_10epochs_adam_full_data_with_rejected.pth'
 BATCH_SIZE = 16
 
 
-def BERT_testing(df: pd.DataFrame,
+def bert_testing(df: pd.DataFrame,
                  path_to_weights: str = PATH_TO_WEIGHTS,
                  model_name: str = BERT_MODEL_NAME,
                  label_dict: dict = CATEGORY_NAME_DICT,
@@ -52,14 +52,14 @@ def BERT_testing(df: pd.DataFrame,
     # initializing the model
     model = BERTClassifier(bert_model_name=model_name,
                            num_classes=n_classes
-                       ).to(device)
+                           ).to(device)
     print(f'Downloaded model: {model_name}')
 
     # using pretrained weights
     model.load_state_dict(torch.load(path_to_weights, map_location=device))
     print(f'Downloaded pretrained weights')
 
-    # creating a dataset
+    # creating a BERT dataset
     tokenizer = BertTokenizer.from_pretrained(BERT_MODEL_NAME)
     print(f'Downloaded the tokenizer')
     test_dataset = BertDataset(df, tokenizer)
@@ -73,7 +73,10 @@ def BERT_testing(df: pd.DataFrame,
     dataloader_size = len(test_dataloader)
     print(f'Dataloader size: {dataloader_size :,.0f} batches')
 
-    # TODO: add output of file name...
+    all_predicted_categories = []
+    all_predicted_probabilities = []
+    all_labels = []
+    all_filenames = []
 
     model.eval()
 
@@ -84,56 +87,43 @@ def BERT_testing(df: pd.DataFrame,
 
         input_ids = batch['input_ids'].to(device)
         attention_mask = batch['attention_mask'].to(device)
+        file_names = batch['file_name']
+
         if test_mode:
-            labels = batch['label'].to(device)
+            all_labels.extend(batch['label'])
 
         with torch.no_grad():
             outputs = model(input_ids=input_ids, attention_mask=attention_mask)
             softmax_outputs = torch.nn.functional.softmax(outputs, dim=1)
-            probabilities = softmax_outputs.cpu().detach().numpy()[:, 0]
+            probabilities = softmax_outputs.cpu().numpy()
+            predicted_categories = probabilities.argmax(1)
+            predicted_probabilities = probabilities[np.arange(probabilities.shape[0]), predicted_categories]
 
-            # TODO: check which axis I need to apply this to
-            predicted_category = probabilities.argmax(1)
-            # probability = probabilities[predicted_category]
+            all_predicted_categories.extend(predicted_categories)
+            all_predicted_probabilities.extend(predicted_probabilities)
+            all_filenames.extend(file_names)
 
-    # print(f'Prediction: {label_dict[predicted_category]} ({probability :,.3f}) ')
+    all_predicted_categories = np.array(all_predicted_categories)
+    all_predicted_probabilities = np.array(all_predicted_probabilities)
+    all_labels = np.array(all_labels)  # empty if not in test mode
 
-    return predicted_category, # probability
+    df_results = pd.DataFrame()
+    df_results['file_name'] = all_filenames
+    df_results['prediction'] = all_predicted_categories
+    df_results['proba'] = all_predicted_probabilities
+    if test_mode:
+        df_results['ground_truth'] = all_labels
 
+        print_main_metrics(df_results['ground_truth'], df_results['prediction'])
+        show_classification_report(df_results['ground_truth'],
+                                   df_results['prediction'],
+                                   labels=CATEGORY_NAME_DICT
+                                   )
+        plot_confusion_matrix(df_results['ground_truth'],
+                              df_results['prediction'],
+                              labels=list(CATEGORY_NAME_DICT.values()),
+                              normalize='true'  # normalized over true label
+                              )
 
+    return df_results
 
-
-  # y_true = np.empty((0, ))
-  # y_pred = np.empty((0, ))
-  # probabilities = np.empty((0, len(label_name_dict)))
-  #
-  #
-  #
-  #
-  #   # saving labels
-  #   y_true = np.hstack((y_true, labels.cpu().detach().numpy()))
-  #
-  #   with torch.no_grad():
-  #     outputs = model(input_ids=input_ids, attention_mask=attention_mask)
-  #     outputs = torch.nn.functional.softmax(outputs, dim=1)
-  #     probabilities = np.vstack((probabilities, outputs.cpu().detach().numpy()))
-  #
-  #   # saving predictions
-  #   y_pred = np.hstack((y_pred, outputs.cpu().detach().numpy().argmax(1)))
-  #
-  # return y_true, y_pred, probabilities
-
-
-
-# show classification report
-
-# # confusion matrix
-# new_labels = [v for v in label_name_dict.values() if v not in ['mortgage_statement', 'property_rate']]
-# # labels = [v for v in label_name_dict.values()]
-# plot_confusion_matrix(y_true, y_preds,
-#                       new_labels
-#                       )
-
-# # same, but normalized over rows (true label)
-#
-# plot_confusion_matrix(y_true, y_preds, new_labels, normalize='true')

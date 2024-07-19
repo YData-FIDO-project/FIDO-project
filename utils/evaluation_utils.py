@@ -1,52 +1,113 @@
+"""
+Main evaluation metrics
+"""
+
+from sklearn.metrics import confusion_matrix, classification_report, \
+  accuracy_score, precision_score, recall_score, f1_score
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
 
 
-def plot_convergence(dict_res):
+def print_main_metrics(ground_truth, predictions):
+    """
+    Printing out main metrics
+    :param ground_truth: ground truth values
+    :param predictions: predicted values
 
-  """
-  Plotting loss and accuracy
-  """
-  fig, axes = plt.subplots(1, 2, figsize=(14,4))
-  types=['Loss', 'Accuracy']
-  plt.subplot(1,2,1); plt.plot(dict_res['train'][0], color='darkslateblue'); plt.plot(dict_res['val'][0], color='indianred');
-  plt.title('Loss'); plt.legend(['train','val'])
-  plt.subplot(1,2,2); plt.plot(dict_res['train'][1], color='darkslateblue'); plt.plot(dict_res['val'][1], color='indianred');
-  plt.title('Accuracy'); plt.legend(['train','val'])
-
-def plot_confusion_matrix(y_true, y_pred, labels: list, normalize = False):
-
-  """
-  Plotting confusion matrix
-  :param y_true: ground truth
-  :param y_pred: prediction
-  :param labels: meaningful label names
-  :param normalize: normalize over rows (string 'true') or columns (string 'predicted')
-  """
+    :returns: accuracy, precision, recall, f1 score, roc auc score
+    """
+    print(f'Main metrics:')
+    print(f'- Accuracy: {accuracy_score(ground_truth, predictions) :,.3f}')
+    print(f'- Precision: {precision_score(ground_truth, predictions, average="weighted") :,.3f}')
+    print(f'- Recall: {recall_score(ground_truth, predictions, average="weighted") :,.3f}')
+    print(f'- F1 score: {f1_score(ground_truth, predictions, average="weighted") :,.3f}')
 
 
-  palette = sns.diverging_palette(230, 20, as_cmap=True)
+def show_classification_report(ground_truth, predictions, labels: dict):
+    """
+    Printing classification report
 
-  if normalize:
-    cm = confusion_matrix(y_true, y_preds, normalize=normalize)
-  else:
-    cm = confusion_matrix(y_true, y_preds)
+    :param ground_truth: ground truth values
+    :param predictions: predicted values
+    :param labels: dictionary label digit to meaningful name
 
-  format = ',.0f' if not normalize else '.0%'
+    :returns: classification report
+    """
+    cr = classification_report(ground_truth, predictions,
+                               labels=list(labels.keys()),
+                               target_names=list(labels.values()),
+                               )
+    print(cr)
 
-  plt.figure(figsize=(8, 8))
-  sns.heatmap(cm, annot=True, fmt=format, cmap=palette, alpha=.7,
-              xticklabels=labels, yticklabels=labels)
-  plt.title('Confusion Matrix', fontsize=14)
-  plt.xlabel('Predicted Labels', fontsize=12)
-  plt.ylabel('True Labels', fontsize=12)
-  plt.show()
 
-  # classification report
+def plot_confusion_matrix(ground_truth, predictions,
+                          labels: list, normalize=False,
+                          save_path: str = None):
+    """
+    Plotting confusion matrix
 
-  cr = classification_report(y_true, y_preds,
-                             labels=[k for k in label_name_dict.keys()],
-                             target_names=[v for v in label_name_dict.values()],
-                             # output_dict=True
-                             )
-  print(cr)
+    :param ground_truth: ground truth values
+    :param predictions: predicted values
+    :param labels: meaningful label names
+    :param normalize: normalize over rows (string 'true'),
+    columns (string 'predicted') or nothing (False)
+    :param save_path: path to save the file
+
+    :returns: confusion matrix plot
+    """
+
+    palette = sns.diverging_palette(230, 20, as_cmap=True)
+
+    if normalize:
+        cm = confusion_matrix(ground_truth, predictions, normalize=normalize)
+    else:
+        cm = confusion_matrix(ground_truth, predictions)
+
+    value_format = ',.0f' if not normalize else '.0%'
+
+    plt.figure(figsize=(8, 8))
+    sns.heatmap(cm, annot=True, fmt=value_format, cmap=palette, alpha=.7,
+                xticklabels=labels, yticklabels=labels)
+    plt.title('Confusion Matrix', fontsize=16)
+    plt.xlabel('Predicted Labels', fontsize=12)
+    plt.ylabel('True Labels', fontsize=12)
+    if save_path:
+        plt.savefig(os.path.join(save_path, 'confusion_matrix.png'), bbox_inches='tight')
+
+    plt.show()
+
+
+def plot_convergence(dict_res: dict,
+                     second_line: bool = True, names: list = ['train', 'validation'],
+                     save_path: str = None):
+    """
+    Line plot. Loss and accuracy for training loop
+    :param dict_res: results (dictionary)
+    :param second_line: if there is second line on the plot, default True
+    :param names: names for the plot legend
+    :param save_path: path to save the file
+
+    :returns: convergence plots
+    """
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 4))
+
+    # 1st subplot (loss)
+    axes[0].plot(dict_res['train'][0], color='darkslateblue', label=names[0])
+    if second_line:
+        axes[0].plot(dict_res['val'][0], color='indianred', label=names[1])
+    axes[0].set_title('Loss')
+    axes[0].legend()
+
+    # 2nd subplot (accuracy)
+    axes[1].plot(dict_res['train'][1], color='darkslateblue', label=names[0])
+    if second_line:
+        axes[1].plot(dict_res['val'][1], color='indianred', label=names[1])
+    axes[1].set_title('Accuracy')
+    axes[1].legend()
+
+    if save_path:
+        plt.savefig(os.path.join(save_path, 'convergence_graphs.png'), bbox_inches='tight')
+
+    plt.show()

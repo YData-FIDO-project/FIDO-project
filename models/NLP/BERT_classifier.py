@@ -30,6 +30,7 @@ class BertDataset(Dataset):
         self.texts = df['text'].astype(str).tolist()
         self.labels = df['label_digit'].values
         self.label_name = df['label'].astype(str).tolist()
+        self.file_names = df['file_name'].tolist()
         self.tokenizer = tokenizer
         self.max_length = max_length
 
@@ -39,6 +40,7 @@ class BertDataset(Dataset):
     def __getitem__(self, idx):
         text = self.texts[idx]
         label = self.labels[idx]
+        file_name = self.file_names[idx]
         encoding = self.tokenizer(text,
                                   return_tensors='pt',
                                   max_length=self.max_length,
@@ -47,8 +49,6 @@ class BertDataset(Dataset):
 
         return {'input_ids': encoding['input_ids'].flatten(),
                 'attention_mask': encoding['attention_mask'].flatten(),
-                'label': torch.tensor(label)
+                'label': torch.tensor(label),
+                'file_name': file_name
                 }
-
-
-# creating dataloader (???)
