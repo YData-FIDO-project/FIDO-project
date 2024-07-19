@@ -79,31 +79,32 @@ def plot_confusion_matrix(ground_truth, predictions,
 
 
 def plot_convergence(dict_res: dict,
-                     second_line: bool = True, names: list = ['train', 'validation'],
-                     save_path: str = None):
+                     second_line: bool = True,
+                     save_path: str = 'outputs'):
     """
     Line plot. Loss and accuracy for training loop
     :param dict_res: results (dictionary)
     :param second_line: if there is second line on the plot, default True
-    :param names: names for the plot legend
     :param save_path: path to save the file
 
     :returns: convergence plots
     """
 
+    dict_keys = list(dict_res.keys())
+
     fig, axes = plt.subplots(1, 2, figsize=(14, 4))
 
     # 1st subplot (loss)
-    axes[0].plot(dict_res['train'][0], color='darkslateblue', label=names[0])
+    axes[0].plot(dict_res[dict_keys[0]]['loss'], color='darkslateblue', label=dict_keys[0])
     if second_line:
-        axes[0].plot(dict_res['val'][0], color='indianred', label=names[1])
+        axes[0].plot(dict_res[dict_keys[1]]['loss'], color='indianred', label=dict_keys[1])
     axes[0].set_title('Loss')
     axes[0].legend()
 
     # 2nd subplot (accuracy)
-    axes[1].plot(dict_res['train'][1], color='darkslateblue', label=names[0])
+    axes[1].plot(dict_res[dict_keys[0]]['accuracy'], color='darkslateblue', label=dict_keys[0])
     if second_line:
-        axes[1].plot(dict_res['val'][1], color='indianred', label=names[1])
+        axes[1].plot(dict_res[dict_keys[1]]['accuracy'], color='indianred', label=dict_keys[1])
     axes[1].set_title('Accuracy')
     axes[1].legend()
 

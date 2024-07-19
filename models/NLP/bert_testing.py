@@ -31,13 +31,13 @@ def bert_testing(df: pd.DataFrame,
     :param df: dataframe with extracted texts. Assumes columns "text" (document text)
     and "label" (can be empty).
     :param path_to_weights: path to saved model weights
-    :param model_name: model nama
+    :param model_name: model name
     :param label_dict: dictionary with category names (digit to label)
     :param batch_size: size of the dataloader batch
     :param test_mode: if we are testing the model performance
     (i.e. ground truth label available) or not (i.e. no labels)
 
-    :returns: predicted categories, probabilities
+    :returns: df with predicted categories and probabilities
     """
 
     df.reset_index(drop=True, inplace=True)
