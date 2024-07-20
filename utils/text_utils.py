@@ -5,11 +5,12 @@ Extracting text from images (currently with the use of Pytesseract)
 # TODO: clean up the imports
 # import os
 import numpy as np
-# import pandas as pd
+import pandas as pd
 import re
 # from PIL import Image
 import cv2
 import pytesseract
+from consts_and_weights.labels import CATEGORY_NAME_DICT
 
 CONFIDENCE_THRESHOLD = 2  # from the tutorial
 
@@ -54,12 +55,37 @@ def extracting_text_from_image(img: np.array):
         print(f"Error processing current image: {e}")
         return None
 
-# # transforming labels in the test set
-# label_digit_dict = {}
-# for k, v in label_name_dict.items():
-#   label_digit_dict[v] = k
-#
-# df_test['label_digit'] = df_test['label'].map(lambda x: label_digit_dict[x])
-# df_test['label_digit'].value_counts(dropna=False), df_test['label'].value_counts(dropna=False)
-#
-# df_test.reset_index(drop=True, inplace=True)
+
+def encoding_labels(df: pd.DataFrame, label_dict: dict = CATEGORY_NAME_DICT) -> pd.DataFrame:
+    """
+    Encoding labels to digits in a dataset
+
+    :param df: df with extracted texts and metadata. Assumes column "category" (str)
+    :param label_dict: dictionary digit-to-label
+
+    :returns: df with a column "label" (int)
+    """
+
+    # reversing label_dict
+    label_to_digit_dict = {v: k for k, v in label_dict.items()}
+
+    df['label'] = df['category'].map(lambda x:
+                                     label_to_digit_dict[x]
+                                     if x in label_to_digit_dict.keys()
+                                     else None)
+    print('Label encoding finished')
+    print(df['label'].value_counts(dropna=False))
+
+    return df
+
+
+def compiling_dataframe() -> pd.DataFrame:
+    """
+    Compiling a dataframe from input data
+
+    :returns: df with extracted text and image metadata
+    """
+    pass
+
+def combining_all_names():
+    pass
