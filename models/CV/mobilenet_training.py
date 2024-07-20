@@ -97,7 +97,6 @@ def mobilenet_training(df: pd.DataFrame,
         print(f"{phase.upper()} dataloader size: {len(dataloader[phase])}")
 
     # initializing the model
-
     model = loading_mobilenet(CATEGORY_NAME_DICT)
     print(f'Downloaded MobileNet')
 

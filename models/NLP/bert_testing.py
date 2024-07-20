@@ -2,7 +2,6 @@
 Code for testing BERT model
 """
 
-# TODO: check which packages are actually needed
 import numpy as np
 import pandas as pd
 import torch
