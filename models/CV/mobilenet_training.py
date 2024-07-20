@@ -2,49 +2,23 @@
 Training loop for MobileNet classifier
 """
 
-# TODO: check which packages are actually needed
-import torch
-import copy
-import time
-from sklearn.model_selection import train_test_split
-from torch import nn
-from torch.utils.data import DataLoader
-from transformers import BertTokenizer, AdamW, get_linear_schedule_with_warmup
 import pandas as pd
+import time
+import copy
+from sklearn.model_selection import train_test_split
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.optim import lr_scheduler
+from torch.utils.data import DataLoader
+from torchvision import transforms
 
 from models.CV.MobileNet_classifier import CVDataset, loading_mobilenet
 from consts_and_weights.labels import CATEGORY_NAME_DICT
 from utils.evaluation_utils import plot_convergence
 from consts_and_weights.image_transforms import *
 
-import warnings
-warnings.filterwarnings("ignore", category=UserWarning)
-from __future__ import print_function, division
 
-import numpy as np
-import pandas as pd
-import random
-import matplotlib.pyplot as plt
-import seaborn as sns
-import time
-import os
-import copy
-plt.ion()   # interactive mode
-from PIL import Image
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from torch.optim import lr_scheduler
-from torch.utils.data import Dataset, DataLoader
-
-import torchvision
-from torchvision import transforms
-
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import confusion_matrix, classification_report
-
-# PATH_TO_WEIGHTS = 'consts_and_weights/mobilenet_small_all_data_10epochs_with_rejected.pth'
 PATH_TO_IMAGES = 'outputs'
 BATCH_SIZE = 16
 EPOCHS = 10

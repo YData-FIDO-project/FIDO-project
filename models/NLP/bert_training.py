@@ -2,7 +2,6 @@
 Code for training BERT model
 """
 
-# TODO: check which packages are actually needed
 import torch
 import copy
 import time
@@ -17,7 +16,6 @@ from consts_and_weights.labels import CATEGORY_NAME_DICT
 from utils.evaluation_utils import plot_convergence
 
 BERT_MODEL_NAME = 'bert-base-uncased'
-PATH_TO_WEIGHTS = 'consts_and_weights/bert_13classes_10epochs_adam_full_data_with_rejected.pth'
 BATCH_SIZE = 16
 EPOCHS = 10
 LEARNING_RATE = 2e-5
@@ -53,11 +51,11 @@ def bert_training(df: pd.DataFrame,
     print(f'Split the data to train and validation set')
     print(f'Train set: {df_train.shape}')
     print(df_train['label_digit'].value_counts(dropna=False, normalize=True).sort_index())
+    df_train.reset_index(drop=True, inplace=True)
     print('* * *')
     print(f'\nValidation set: {df_val.shape}')
     print(df_val['label_digit'].value_counts(dropna=False, normalize=True).sort_index())
-
-    df.reset_index(drop=True, inplace=True)
+    df_val.reset_index(drop=True, inplace=True)
 
     n_classes = len(label_dict)
 
@@ -66,7 +64,7 @@ def bert_training(df: pd.DataFrame,
                           torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
     print(f"Device: {device}")
 
-    # creating a BERT dataset
+    # initializing tokenizer
     tokenizer = BertTokenizer.from_pretrained(BERT_MODEL_NAME)
     print(f'Downloaded the tokenizer')
 
@@ -83,7 +81,7 @@ def bert_training(df: pd.DataFrame,
     dataloader = {}
     for phase in ['train', 'val']:
         print(f"\n{phase.upper()}: {dataset_sizes[phase] :,.0f} samples")
-        dataloader[phase] = DataLoader(datasets[phase], batch_size=BATCH_SIZE,
+        dataloader[phase] = DataLoader(datasets[phase], batch_size=batch_size,
                                        num_workers=2, prefetch_factor=2,
                                        shuffle=True)
         print(f"{phase.upper()} dataloader size: {len(dataloader[phase])}")
@@ -148,7 +146,7 @@ def bert_training(df: pd.DataFrame,
                         loss.backward()
                         optimizer.step()
 
-                # Collect statistics
+                # collect statistics
                 running_loss += loss.item() * input_ids.size(0)
                 running_corrects += torch.sum(predictions == labels.detach())
 
