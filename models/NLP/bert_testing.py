@@ -1,5 +1,5 @@
 """
-Code for training BERT model
+Code for testing BERT model
 """
 
 # TODO: check which packages are actually needed
