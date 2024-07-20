@@ -3,3 +3,5 @@ venv/
 
 # project configuration files
 .idea/
+
+.DS_Store/

@@ -53,3 +53,13 @@ def extracting_text_from_image(img: np.array):
     except Exception as e:
         print(f"Error processing current image: {e}")
         return None
+
+# # transforming labels in the test set
+# label_digit_dict = {}
+# for k, v in label_name_dict.items():
+#   label_digit_dict[v] = k
+#
+# df_test['label_digit'] = df_test['label'].map(lambda x: label_digit_dict[x])
+# df_test['label_digit'].value_counts(dropna=False), df_test['label'].value_counts(dropna=False)
+#
+# df_test.reset_index(drop=True, inplace=True)

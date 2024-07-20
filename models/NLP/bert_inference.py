@@ -4,14 +4,14 @@ Inference on BERT model
 import torch
 from transformers import BertTokenizer
 
-from models.BERT_classifier import BERTClassifier
+from models.NLP.BERT_classifier import BERTClassifier
 from consts_and_weights.labels import CATEGORY_NAME_DICT
 
 BERT_MODEL_NAME = 'bert-base-uncased'
 PATH_TO_WEIGHTS = 'consts_and_weights/bert_13classes_10epochs_adam_full_data_with_rejected.pth'
 
 
-def BERT_inference(document: str, path_to_weights: str = PATH_TO_WEIGHTS,
+def bert_inference(document: str, path_to_weights: str = PATH_TO_WEIGHTS,
                    model_name: str = BERT_MODEL_NAME,
                    label_dict: dict = CATEGORY_NAME_DICT):
     """
