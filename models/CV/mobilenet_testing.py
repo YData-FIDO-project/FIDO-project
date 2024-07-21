@@ -49,7 +49,7 @@ def mobilenet_testing(df: pd.DataFrame,
     data_transforms = transforms.Compose([
         transforms.Resize(IMG_SIZE),
         transforms.ToTensor(),
-        transforms.Normalize(mean=IMG_MEANS, std=IMG_STDS),
+        # transforms.Normalize(mean=IMG_MEANS, std=IMG_STDS),
     ])
 
     # creating the dataset
@@ -68,7 +68,7 @@ def mobilenet_testing(df: pd.DataFrame,
     print(f'Dataloader size: {dataloader_size :,.0f} batches')
 
     # initializing the model
-    model = loading_mobilenet(CATEGORY_NAME_DICT)
+    model = loading_mobilenet()
     print(f'Downloaded MobileNet')
 
     # using pretrained weights

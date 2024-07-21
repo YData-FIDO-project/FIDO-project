@@ -72,7 +72,7 @@ def mobilenet_training(df: pd.DataFrame,
     data_transforms = transforms.Compose([
         transforms.Resize(IMG_SIZE),
         transforms.ToTensor(),
-        transforms.Normalize(mean=IMG_MEANS, std=IMG_STDS),
+        # transforms.Normalize(mean=IMG_MEANS, std=IMG_STDS),
     ])
 
     # creating datasets
