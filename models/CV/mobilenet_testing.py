@@ -1,37 +1,36 @@
 """
-Code for testing BERT model
+Code for testing MobileNet model
 """
 
 import numpy as np
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
-from transformers import BertTokenizer
+from torchvision import transforms
 
-from models.NLP.BERT_classifier import BertDataset, BERTClassifier
+from models.CV.MobileNet_classifier import CVDataset, loading_mobilenet
 from consts_and_weights.labels import CATEGORY_NAME_DICT
 from utils.evaluation_utils import *
+from consts_and_weights.image_transforms import *
 
-BERT_MODEL_NAME = 'bert-base-uncased'
-PATH_TO_WEIGHTS = 'consts_and_weights/bert_13classes_10epochs_adam_full_data_with_rejected.pth'
+PATH_TO_IMAGES = 'outputs'
+PATH_TO_WEIGHTS = 'consts_and_weights/mobilenet_small_all_data_10epochs_with_rejected.pth'
 BATCH_SIZE = 16
 
 
-def bert_testing(df: pd.DataFrame,
-                 path_to_weights: str = PATH_TO_WEIGHTS,
-                 model_name: str = BERT_MODEL_NAME,
-                 label_dict: dict = CATEGORY_NAME_DICT,
-                 batch_size: int = BATCH_SIZE,
-                 test_mode: bool = True):
+def mobilenet_testing(df: pd.DataFrame,
+                      path_to_images: str = PATH_TO_IMAGES,
+                      path_to_weights: str = PATH_TO_WEIGHTS,
+                      batch_size: int = BATCH_SIZE,
+                      test_mode: bool = True):
     """
     Classifying a batch of documents. Can be used for processing multiple documents
     (with test_mode = False) or testing retrained model (with test_mode = True)
 
-    :param df: dataframe with extracted texts. Assumes columns "text" (document text)
-    and "label" (can be empty).
+    :param df: dataframe with metadata texts. Assumes columns "file_name"
+    and "label" (digit, can be empty)
+    :param path_to_images: path to the folder with images
     :param path_to_weights: path to saved model weights
-    :param model_name: model name
-    :param label_dict: dictionary with category names (digit to label)
     :param batch_size: size of the dataloader batch
     :param test_mode: if we are testing the model performance
     (i.e. ground truth label available) or not (i.e. no labels)
@@ -41,27 +40,23 @@ def bert_testing(df: pd.DataFrame,
 
     df.reset_index(drop=True, inplace=True)
 
-    n_classes = len(label_dict)
-
     # to GPU
     device = torch.device('mps' if torch.backends.mps.is_available() else
                           torch.device('cuda' if torch.cuda.is_available() else 'cpu'))
     print(f"Device: {device}")
 
-    # initializing the model
-    model = BERTClassifier(bert_model_name=model_name,
-                           num_classes=n_classes
-                           ).to(device)
-    print(f'Downloaded model: {model_name}')
+    # initializing transforms
+    data_transforms = transforms.Compose([
+        transforms.Resize(IMG_SIZE),
+        transforms.ToTensor(),
+        # transforms.Normalize(mean=IMG_MEANS, std=IMG_STDS),
+    ])
 
-    # using pretrained weights
-    model.load_state_dict(torch.load(path_to_weights, map_location=device))
-    print(f'Downloaded pretrained weights')
-
-    # creating a BERT dataset
-    tokenizer = BertTokenizer.from_pretrained(BERT_MODEL_NAME)
-    print(f'Downloaded the tokenizer')
-    test_dataset = BertDataset(df, tokenizer)
+    # creating the dataset
+    test_dataset = CVDataset(path_to_images=path_to_images,
+                             df_metadata=df,
+                             transform=data_transforms
+                             )
     dataset_size = test_dataset.__len__()
     print(f'Dataset size: {dataset_size :,.0f} samples')
 
@@ -72,6 +67,14 @@ def bert_testing(df: pd.DataFrame,
     dataloader_size = len(test_dataloader)
     print(f'Dataloader size: {dataloader_size :,.0f} batches')
 
+    # initializing the model
+    model = loading_mobilenet()
+    print(f'Downloaded MobileNet')
+
+    # using pretrained weights
+    model.load_state_dict(torch.load(path_to_weights, map_location=device))
+    print(f'Downloaded pretrained weights')
+
     all_predicted_categories = []
     all_predicted_probabilities = []
     all_labels = []
@@ -80,27 +83,26 @@ def bert_testing(df: pd.DataFrame,
     model.eval()
 
     # loop for inputs / outputs
-    for n, batch in enumerate(test_dataloader):
+    for n, (inputs, labels, names) in enumerate(test_dataloader):
         if n % 10 == 0:
             print(f'- BATCH: {n} / {dataloader_size}')
 
-        input_ids = batch['input_ids'].to(device)
-        attention_mask = batch['attention_mask'].to(device)
-        file_names = batch['file_name']
+        inputs = inputs.to(device)
+        all_filenames.extend(names)
 
         if test_mode:
-            all_labels.extend(batch['label'])
+            all_labels.extend(labels)
 
         with torch.no_grad():
-            outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+            outputs = model(inputs)
             softmax_outputs = torch.nn.functional.softmax(outputs, dim=1)
             probabilities = softmax_outputs.cpu().numpy()
             predicted_categories = probabilities.argmax(1)
-            predicted_probabilities = probabilities[np.arange(probabilities.shape[0]), predicted_categories]
+            predicted_probabilities = probabilities[np.arange(probabilities.shape[0]),
+                                                    predicted_categories]
 
             all_predicted_categories.extend(predicted_categories)
             all_predicted_probabilities.extend(predicted_probabilities)
-            all_filenames.extend(file_names)
 
     all_predicted_categories = np.array(all_predicted_categories)
     all_predicted_probabilities = np.array(all_predicted_probabilities)
@@ -125,4 +127,3 @@ def bert_testing(df: pd.DataFrame,
                               )
 
     return df_results
-
