@@ -7,10 +7,10 @@ from torchvision import transforms
 
 from models.CV.MobileNet_classifier import loading_mobilenet
 from consts_and_weights.labels import CATEGORY_NAME_DICT
-from consts_and_weights.image_transforms import *
 
 PATH_TO_WEIGHTS = '../../consts_and_weights/mobilenet_small_all_data_10epochs_with_rejected.pth'
 BATCH_SIZE = 16
+IMG_SIZE = (256, 256)
 
 
 def mobilenet_inference(path_to_image: str,
@@ -35,7 +35,6 @@ def mobilenet_inference(path_to_image: str,
     data_transforms = transforms.Compose([
         transforms.Resize(IMG_SIZE),
         transforms.ToTensor(),
-        # transforms.Normalize(mean=IMG_MEANS, std=IMG_STDS),
     ])
 
     # loading and transforming the image
@@ -49,6 +48,7 @@ def mobilenet_inference(path_to_image: str,
 
     # using pretrained weights
     model.load_state_dict(torch.load(path_to_weights, map_location=device))
+    model = model.to(device)
     print(f'Downloaded pretrained weights')
 
     model.eval()

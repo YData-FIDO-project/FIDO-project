@@ -28,8 +28,7 @@ class BERTClassifier(nn.Module):
 class BertDataset(Dataset):
     def __init__(self, df, tokenizer, max_length=512):
         self.texts = df['text'].astype(str).tolist()
-        self.labels = df['label_digit'].values
-        self.label_name = df['label'].astype(str).tolist()
+        self.labels = df['label'].values
         self.file_names = df['file_name'].tolist()
         self.tokenizer = tokenizer
         self.max_length = max_length

@@ -46,19 +46,22 @@ class CVDataset(Dataset):
         self.path = path_to_images
         self.df = df_metadata
         self.transform = transform
-        self.images = sorted([f for f in os.listdir(self.path) if f in self.df['file_name']])
+        contents_of_dir = sorted(os.listdir(self.path))
+        self.images = [f for f in self.df['file_name'] if f in contents_of_dir]
+        # removing images that weren't found from the metadata
+        self.df = self.df[self.df['file_name'].isin(self.images)].reset_index(drop=True)
 
     def __len__(self):
         return len(self.images)
 
     def __getitem__(self, idx):
-        img_name = self.images[idx]
+        img_name = self.df.at[idx, 'file_name']
         img_path = os.path.join(self.path, img_name)
         image = Image.open(img_path).convert('RGB')
 
         if self.transform:
             image = self.transform(image)
 
-        label = self.df.at[self.df['file_name'] == img_name, 'label']
+        label = self.df.at[idx, 'label']
 
         return image, label, img_name
