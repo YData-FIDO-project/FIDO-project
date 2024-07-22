@@ -27,7 +27,7 @@ def bert_testing(df: pd.DataFrame,
     Classifying a batch of documents. Can be used for processing multiple documents
     (with test_mode = False) or testing retrained model (with test_mode = True)
 
-    :param df: dataframe with extracted texts. Assumes columns "text" (document text)
+    :param df: dataframe with extracted texts. Assumes columns "file_name", "text" (document text)
     and "label" (can be empty).
     :param path_to_weights: path to saved model weights
     :param model_name: model name
