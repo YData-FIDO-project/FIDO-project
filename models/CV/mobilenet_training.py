@@ -16,13 +16,12 @@ from torchvision import transforms
 from models.CV.MobileNet_classifier import CVDataset, loading_mobilenet
 from consts_and_weights.labels import CATEGORY_NAME_DICT
 from utils.evaluation_utils import plot_convergence
-from consts_and_weights.image_transforms import *
-
 
 PATH_TO_IMAGES = 'outputs'
 BATCH_SIZE = 16
 EPOCHS = 10
 LEARNING_RATE = 0.001
+IMG_SIZE = (256, 256)
 
 
 def mobilenet_training(df: pd.DataFrame,
@@ -72,7 +71,6 @@ def mobilenet_training(df: pd.DataFrame,
     data_transforms = transforms.Compose([
         transforms.Resize(IMG_SIZE),
         transforms.ToTensor(),
-        # transforms.Normalize(mean=IMG_MEANS, std=IMG_STDS),
     ])
 
     # creating datasets
