@@ -35,6 +35,7 @@ def downloading_image_from_s3(img_uri: str,
         aws_access_key_id=key_id,
         aws_secret_access_key=secret_access_key
     )
+    print(f'Connected to S3')
 
     # image name
     img_name = img_uri.replace('/', '_')
@@ -43,7 +44,7 @@ def downloading_image_from_s3(img_uri: str,
     try:
         s3_client.download_file(bucket_name, img_uri, save_to_path)
         print(f'Image downloaded successfully: {img_name}')
-        return save_to_path
+        return save_to_path, img_name
     except Exception as e:
         print(f'Error: {str(e)}')
-        return None
+        return None, None

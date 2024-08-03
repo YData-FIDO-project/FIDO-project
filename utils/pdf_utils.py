@@ -15,28 +15,29 @@ def converting_pdf_to_jpg(file_path: str, output_dir: str = 'outputs'):
     :param file_path: PDF file
     :param output_dir: directory for storing converted file
 
-    :returns: JPG image
+    :returns: list of paths to all converted images (1 PDF page = 1 JPG image), list of filenames
     """
     # creating output directory if it doesn't exist
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
     try:
-        file_name = os.path.splitext(os.path.basename(file_path))[0].lower()
+        base_name = os.path.splitext(os.path.basename(file_path))[0].lower()
         image = convert_from_path(file_path)
-        all_image_paths = []
+        all_image_paths, all_names = [], []
 
         for n, img in enumerate(image):
-            file_name = f'{file_name}_page_{n + 1}.jpg'
+            file_name = f'{base_name}_page_{n + 1}.jpg'
             image_path = os.path.join(output_dir, file_name)
             img.save(image_path, 'JPEG')
             all_image_paths.append(image_path)
+            all_names.append(file_name)
 
         print('Converted PDF to JPG')
-        return all_image_paths
+        return all_image_paths, all_names
     except Exception as e:
         print(f'Failed to convert the document: {e}')
-        return []
+        return [], []
 
 
 def extracting_text_from_pdf(file_path) -> str:
@@ -53,14 +54,17 @@ def extracting_text_from_pdf(file_path) -> str:
             for page_number in range(len(reader.pages)):
                 page = reader.pages[page_number]
                 text += page.extract_text() or ""
-        if text.strip():  # if not empty string
-            return text
-        elif text in SCANNERS:  # returned only "Scanned by CamScanner" etc.
+
+        if text in SCANNERS:  # returned only "Scanned by CamScanner" etc.
             print('Failed to extract text from PDF; converting to JPG')
-            return None
-        else:
+            return ''
+
+        if not text.strip():  # returned empty string
             print('Failed to extract text from PDF; converting to JPG')
-            return None
+            return ''
+
+        return text
+
     except Exception as e:
         print(f"Error extracting text from PDF {file_path}: {e}")
-        return None
+        return ''

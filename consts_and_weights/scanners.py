@@ -4,5 +4,6 @@ Automated messages from scanner apps
 
 SCANNERS = [
     'Scanned with AnyScannerScanned with AnyScannerScanned with AnyScannerScanned with AnyScanner',
-    'Scanned with CamScanner'
+    'Scanned with CamScanner',
+    'Scanned by TapScanner'
 ]

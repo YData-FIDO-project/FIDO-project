@@ -5,7 +5,7 @@ All categories currently used in the app
 ALL_CATEGORIES_LIST = [
   'appointment_letter',
   'bank_statement',
-  'birth_certificate',  # remove?
+  'birth_certificate',
   'electricity_bill',
   'form_3',
   'form_4',
@@ -14,8 +14,8 @@ ALL_CATEGORIES_LIST = [
   'mortgage_statement',
   'payslip',
   'property_rate',
+  'rejected',
   'ssnit_pension_statement',
   'tenancy_agreement',
-  'unknown',  # rename to rejected?
   'water_bill'
 ]
