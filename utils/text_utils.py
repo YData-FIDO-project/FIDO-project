@@ -7,9 +7,9 @@ Extracting text from images (currently with the use of Pytesseract)
 import numpy as np
 import pandas as pd
 import re
-# from PIL import Image
 import cv2
 import pytesseract
+from PIL import Image
 from consts_and_weights.labels import CATEGORY_NAME_DICT
 
 CONFIDENCE_THRESHOLD = 2  # from the tutorial
@@ -49,11 +49,32 @@ def extracting_text_from_image(img: np.array):
             return text
         else:
             print("Failed to extract the text")
-            return None
+            return ''
 
     except Exception as e:
         print(f"Error processing current image: {e}")
-        return None
+        return ''
+
+
+def image_to_text_pipeline(img_path: str) -> str:
+    """
+    Text extraction module: from image to text
+
+    :param img_path: path to image stored locally
+
+    :returns: extracted text (str)
+    """
+
+    try:
+        input_image = Image.open(img_path)
+    except Exception as e:
+        print(f'Error: {str(e)}. Please review the file manually.')
+        return ''
+
+    img_array = np.array(input_image)
+    text = extracting_text_from_image(img=img_array)
+
+    return text
 
 
 def encoding_labels(df: pd.DataFrame, label_dict: dict = CATEGORY_NAME_DICT) -> pd.DataFrame:
@@ -86,6 +107,7 @@ def compiling_dataframe() -> pd.DataFrame:
     :returns: df with extracted text and image metadata
     """
     pass
+
 
 def combining_all_names():
     pass

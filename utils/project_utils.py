@@ -61,7 +61,9 @@ def matching_name(input_name: str, text: str, threshold: int = 80):
             total_score += match_score
 
     total_score /= (100 * len(name_preprocessed))
-    print(f'Confidence level: {total_score :.0%}')
+    found_name = total_score > .6
+    print(f'Same customer: {found_name} (confidence level: {total_score :.0%})')
+    print(f'Parts of the name recognized: {matches}')
 
-    return matches, total_score
+    return found_name, matches, total_score,
 

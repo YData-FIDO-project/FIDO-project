@@ -8,7 +8,7 @@ from torchvision import transforms
 from models.CV.MobileNet_classifier import loading_mobilenet
 from consts_and_weights.labels import CATEGORY_NAME_DICT
 
-PATH_TO_WEIGHTS = '../../consts_and_weights/mobilenet_small_all_data_10epochs_with_rejected.pth'
+PATH_TO_WEIGHTS = 'consts_and_weights/mobilenet_small_all_data_10epochs_with_rejected.pth'
 BATCH_SIZE = 16
 IMG_SIZE = (256, 256)
 
