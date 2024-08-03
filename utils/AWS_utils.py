@@ -6,7 +6,7 @@ import boto3
 import os
 
 S3_BUCKET_NAME = 'y-data-fido-project'
-LOCAL_DIR = '../downloads'
+LOCAL_DIR = 'outputs'
 
 
 def downloading_image_from_s3(img_uri: str,

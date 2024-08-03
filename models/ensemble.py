@@ -1,5 +1,5 @@
 """
-Model ensemble code for a batch of documents
+Model ensemble code
 """
 
 import pandas as pd
