@@ -70,8 +70,8 @@ Current OCR tool implemented in the project is Pytesseract. If you wish to chang
 ### consts_and_weights
 *Constants used in the project and weights for pretrained models*
 
--<code>categories.py</code>: List of categories used in training
--<code>labels.py</code>: Category dictionary (digit to label)
+- <code>categories.py</code>: List of categories used in training
+- <code>labels.py</code>: Category dictionary (digit to label)
 - <code>scanners.py</code>: List of mobile scanner app watermarks *(if text extracted from PDF consists of this watermark only, it will be ignored)*
 - <code>bert_13classes_10epochs_adam_full_data_with_rejected.pth</code>: Weights for BERT *(Git LFS pointer)*
 - <code>mobilenet_large_all_data_10epochs_with_rejected.pth</code>: Weights for MobileNet *(Git LFS pointer)*
@@ -79,24 +79,25 @@ Current OCR tool implemented in the project is Pytesseract. If you wish to chang
   
 ### models
 
+- <code>ensemble.py</code>: Calculating model ensemble prediction (for 1 / several documents)
+
 **MobileNet models:**
-- <code>MobileNet_classifier.py</code>: initializing the classifier
-- <code>mobilenet_training.py</code>: code for training/retraining the model
-- <code>mobilenet_testing.py</code>: code for testing the model performance
-- <code>mobilenet_inference.py</code>: inference for 1 document
-- <code>mobilenet_inference_batch.py</code>: inference for several documents *(in case of retroscoring)*
+- <code>MobileNet_classifier.py</code>: Initializing the classifier
+- <code>mobilenet_training.py</code>: Code for training/retraining the model
+- <code>mobilenet_testing.py</code>: Code for testing the model performance / inference for several documents *(in case of retroscoring)*
+- <code>mobilenet_inference.py</code>: Inference for 1 document
+
 
 **BERT models:**
-- <code>BERT_classifier.py</code>: initializing the classifier
-- <code>bert_training.py</code>: code for training/retraining the model
-- <code>bert_testing.py</code>: code for testing the model performance
-- <code>bert_inference.py</code>: inference for 1 document
-- <code>bert_inference_batch.py</code>: inference for several documents *(in case of retroscoring)*
+- <code>BERT_classifier.py</code>: Initializing the classifier
+- <code>bert_training.py</code>: Code for training/retraining the model
+- <code>bert_testing.py</code>: Code for testing the model performance / inference for several documents *(in case of retroscoring)*
+- <code>bert_inference.py</code>: Inference for 1 document
 
 ### utils
 Project helper functions
-- <code>AWS_utils.py</code>: script for downloading a document from AWS S3 bucket
-- <code>img_utils.py</code>: ...
+- <code>AWS_utils.py</code>: Script for downloading a document from AWS S3 bucket. Called from <code>main.py</code>
+- <code>evaluation_utils.py</code>: Script for printing main metrics (accuracy, f1 score etc), classification report and plotting confusion matrix. These functions are called from <code>models/NLP/bert_testing.py</code>, <code>models/CV/mobilenet_testing.py</code> and <code>models/ensemble.py</code>
 - <code>pdf_utils.py</code>: scripts for transforming PDF documents *(e.g. extracting texts, converting to JPG)*
 - <code>project_utils.py</code>: scripts for the pipeline *(matching document category and customer name)*
 - <code>text_extraction.py</code>: script for OCR
