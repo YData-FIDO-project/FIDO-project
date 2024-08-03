@@ -27,14 +27,15 @@ def main(img_uri: str, key_id: str, secret_access_key: str,
     """
     Validating an input document
 
-    :param img_uri:
-    :param key_id:
-    :param secret_access_key:
-    :param customer_name:
-    :param input_category:
-    :param random_state:
+    :param img_uri: URI of the input image (AWS S3 bucket)
+    :param key_id: key id to access AWS
+    :param secret_access_key: secret access key to access AWS
+    :param customer_name: name of the customer who uploaded the document
+    :param input_category: category under which the document was uploaded
+    :param random_state: random state seed if needed (default None)
     :param local_dir: path to local directory in which we save the file
-    :return:
+
+    :returns: df with full image info + extracted text + model ensemble prediction
     """
 
     # initial checks
