@@ -1,7 +1,7 @@
 boto3==1.34.144
 fire==0.6.0
 matplotlib==3.9.1
-numpy==2.0.0
+numpy==2.0.1
 opencv_python==4.10.0.84
 pandas==2.2.2
 pdf2image==1.17.0
@@ -12,5 +12,5 @@ rapidfuzz==3.9.4
 scikit_learn==1.5.1
 seaborn==0.13.2
 torch==2.2.2
-torchvision==0.18.1
+torchvision==0.17.2
 transformers==4.42.4
