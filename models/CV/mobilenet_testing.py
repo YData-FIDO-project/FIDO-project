@@ -13,7 +13,7 @@ from consts_and_weights.labels import CATEGORY_NAME_DICT
 from utils.evaluation_utils import *
 
 PATH_TO_IMAGES = 'outputs'
-PATH_TO_WEIGHTS = 'consts_and_weights/mobilenet_small_all_data_10epochs_with_rejected.pth'
+PATH_TO_WEIGHTS = 'consts_and_weights/mobilenet_large_all_data_10epochs_with_rejected.pth'
 BATCH_SIZE = 16
 IMG_SIZE = (256, 256)
 

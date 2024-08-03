@@ -23,7 +23,7 @@ def loading_mobilenet(label_dict: dict = CATEGORY_NAME_DICT):
 
     n_classes = len(label_dict)
 
-    model = models.mobilenet_v3_small(pretrained=True)
+    model = models.mobilenet_v3_large(pretrained=True)
 
     # freezing the weights
     for param in model.parameters():
