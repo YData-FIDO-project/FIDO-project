@@ -1,9 +1,7 @@
 """
-Extracting text from images (currently with the use of Pytesseract)
+Extracting text from images (currently with the help of Pytesseract)
 """
 
-# TODO: clean up the imports
-# import os
 import numpy as np
 import pandas as pd
 import re

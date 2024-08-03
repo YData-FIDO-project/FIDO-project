@@ -142,7 +142,9 @@ def main(img_uri: str, key_id: str, secret_access_key: str,
     )
     img_info['category_is_correct'] = category_match
     if category_match:
-        print('- Category: correct')
+        print('\n- Category: correct')
+    else:
+        print('\n- ATTENTION: category mismatch')
 
     # name matching
     name_match, name_parts, name_score = matching_name(input_name=customer_name,
@@ -150,7 +152,9 @@ def main(img_uri: str, key_id: str, secret_access_key: str,
     img_info['name_is_correct'] = name_match
     img_info['name_confidence'] = name_score
     if name_match:
-        print(f'- Name: correct')
+        print(f'\n- Name: correct')
+    else:
+        print('\n- ATTENTION: name mismatch')
 
     # compile file with results
     df_final = pd.DataFrame([img_info]).merge(df_ensemble, on='file_name')

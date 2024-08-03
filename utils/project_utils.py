@@ -1,7 +1,7 @@
 """
 Storing all helper functions
 """
-from rapidfuzz import fuzz, process
+from rapidfuzz import fuzz
 import re
 
 from consts_and_weights.categories import ALL_CATEGORIES_LIST
