@@ -13,6 +13,7 @@ For validating an input document, please run the <code>main.py</code> file. It t
 --secret_access_key="..."  # access to AWS
 --customer_name="John Smith"  # name of the customer in the app
 --input_category="appointment_letter"  # category under which the file was uploaded
+--random_state=None  # random state seed, default None
 --local_dir="outputs"  # category where the script will save the downloaded file and the prediction
 ```
 
@@ -98,7 +99,8 @@ Current OCR tool implemented in the project is Pytesseract. If you wish to chang
 Project helper functions
 - <code>AWS_utils.py</code>: Script for downloading a document from AWS S3 bucket. Called from <code>main.py</code>
 - <code>evaluation_utils.py</code>: Script for printing main metrics (accuracy, f1 score etc), classification report and plotting confusion matrix. These functions are called from <code>models/NLP/bert_testing.py</code>, <code>models/CV/mobilenet_testing.py</code> and <code>models/ensemble.py</code>
-- <code>pdf_utils.py</code>: scripts for transforming PDF documents *(e.g. extracting texts, converting to JPG)*
-- <code>project_utils.py</code>: scripts for the pipeline *(matching document category and customer name)*
-- <code>text_extraction.py</code>: script for OCR
+- <code>pdf_utils.py</code>: Scripts for transforming PDF documents *(e.g. extracting texts, converting to JPG)*. Called from <code>main.py</code>
+- <code>project_utils.py</code>: Scripts for the pipeline *(matching document category and customer name)*. Called from <code>main.py</code>
+- <code>random_state_utils.py</code>: Script for assigning random seed. Called from <code>main.py</code>
+- <code>text_utils.py</code>: Scripts for OCR, encoding labels and other text-related tasks. Called from <code>main.py</code>
 
