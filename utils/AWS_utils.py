@@ -4,6 +4,7 @@ A script for downloading a file from S3 bucket
 
 import boto3
 import os
+import pandas as pd
 
 S3_BUCKET_NAME = 'y-data-fido-project'
 LOCAL_DIR = 'outputs'
