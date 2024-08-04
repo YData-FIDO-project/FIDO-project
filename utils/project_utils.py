@@ -28,13 +28,14 @@ def matching_category(input_category: str, predicted_category: str) -> bool:
     return input_category == predicted_category
 
 
-def matching_name(input_name: str, text: str, threshold: int = 80):
+def matching_name(input_name: str, text: str, threshold: int = 80, verbose: bool = True):
     """
     Checking if uploaded document contains name of the customer
 
     :param input_name: customer name in the database
     :param text: text extracted from the uploaded document
     :param threshold: threshold value for fuzzywuzz similarity score
+    :param verbose: if the function should print out the results of the matching (default True)
 
     :returns: matches (dictionary with name parts and similarity score), total matching score
     """
@@ -62,8 +63,9 @@ def matching_name(input_name: str, text: str, threshold: int = 80):
 
     total_score /= (100 * len(name_preprocessed))
     found_name = total_score > .6
-    print(f'Same customer: {found_name} (confidence level: {total_score :.0%})')
-    print(f'Parts of the name recognized: {matches}')
+    if verbose:
+        print(f'Same customer: {found_name} (confidence level: {total_score :.0%})')
+        print(f'Parts of the name recognized: {matches}')
 
-    return found_name, matches, total_score,
+    return found_name, matches, total_score
 

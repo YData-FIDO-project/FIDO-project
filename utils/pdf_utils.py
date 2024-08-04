@@ -9,7 +9,7 @@ import os
 from consts_and_weights.scanners import SCANNERS
 
 
-def converting_pdf_to_jpg(file_path: str, output_dir: str = 'outputs'):
+def converting_pdf_to_jpg(file_path: str, output_dir: str = 'outputs', verbose: bool = True):
     """
     Converting PDF file to image
     :param file_path: PDF file
@@ -33,10 +33,12 @@ def converting_pdf_to_jpg(file_path: str, output_dir: str = 'outputs'):
             all_image_paths.append(image_path)
             all_names.append(file_name)
 
-        print('Converted PDF to JPG')
+        if verbose:
+            print('Converted PDF to JPG')
         return all_image_paths, all_names
     except Exception as e:
-        print(f'Failed to convert the document: {e}')
+        if verbose:
+            print(f'Failed to convert the document: {e}')
         return [], []
 
 
