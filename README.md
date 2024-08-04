@@ -43,7 +43,16 @@ Output is a csv file saved in <code>local_dir</code>, containing the following c
 ## Main Tasks
 
 ### 1. Retroscoring
-...
+In order to run inference on a batch of samples / do retroscoring, please follow these steps:
+
+1. Prepare a csv file which includes columns <code>uri</code>, <code>customer_name</code> and <code>input_category</code> (if testing the model)
+2. Run <code>downloading_batch_of_images</code> from <code>utils.AWS_utils.py</code> in order to download the files from S3 bucket and save them locally.
+3. Run <code>ocr_for_a_batch</code> from <code>utils.text_utils.py</code> in order to extract texts from the images/pdfs. This is a slow function, rough estimate is 5-6 sec/document.
+4. Run <code>retroscoring.py</code> (root directory) to get predictions for a batch of documents.
+
+  - If parameter <code>test_mode = True</code>, it will expect column <code>label</code> (digit) with the ground truth and it will calculate main metrics (accuracy, precision, recall, f1 score). It will also output confusion matrix.
+  - If parameter <code>test_mode = False</code> (default), it will output only df with prediction results.
+7. 
 
 ### 2. Retraining the model
 ...
