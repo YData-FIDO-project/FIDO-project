@@ -76,7 +76,7 @@ def main(df: pd.DataFrame, test_mode: bool = False,
     # name matching
     # a wrapper function to unpack the results
     def apply_matching_name(row):
-        found_name, _, total_score = matching_name(row['name'], row['text'])
+        found_name, _, total_score = matching_name(row['name'], row['text'], verbose=False)
         return pd.Series({'name_is_correct': found_name, 'name_confidence': total_score})
 
     df_ensemble[[
