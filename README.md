@@ -80,8 +80,9 @@ Current OCR tool implemented in the project is Pytesseract. If you wish to chang
 
 ## Folder structure
 
-- main.py
-- requirements.txt
+- <code>main.py</code>
+- <code>retroscoring.py</code>
+- <code>requirements.txt</code>
 
 ### outputs
 *Default folder for script outputs (downloads and generated csv files).*
