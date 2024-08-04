@@ -98,16 +98,7 @@ def encoding_labels(df: pd.DataFrame, label_dict: dict = CATEGORY_NAME_DICT) -> 
     return df
 
 
-def compiling_dataframe() -> pd.DataFrame:
-    """
-    Compiling a dataframe from input data
-
-    :returns: df with extracted text and image metadata
-    """
-    pass
-
-
-def combining_all_names(df: pd.DataFrame, method: str = 'first')  -> pd.Series:
+def combining_all_names(df: pd.DataFrame, method: str = 'first') -> pd.Series:
 
     """
     This function is not called in the project,
@@ -118,24 +109,27 @@ def combining_all_names(df: pd.DataFrame, method: str = 'first')  -> pd.Series:
     :param method: "first" (returning first instance), "last" (returnin last instance)
     or full (returning a list)
 
-    :returns: pd.Series with the full_name (indexed by user_id)
+    :returns: pd.Series with the full customer_name (indexed by user_id)
     """
 
     name_cols = ['firstname', 'middlename', 'lastname']
-    df['full_name'] = (df
-                       .apply(lambda x: ' '.join(x[name_cols].dropna()), axis=1)
-                       .replace({r'\s+': ' '}, regex=True)
-                       .str.upper()
-                       )
+    df['customer_name'] = (df
+                           .apply(lambda x: ' '.join(x[name_cols].dropna()), axis=1)
+                           .replace({r'\s+': ' '}, regex=True)
+                           .str.upper()
+                           )
 
     if method == 'first':
-        names_lookup = df.groupby('user_id')['full_name'].first()
+        names_lookup = df.groupby('user_id')['customer_name'].first()
 
     elif method == 'last':
-        names_lookup = df.groupby('user_id')['full_name'].last()
+        names_lookup = df.groupby('user_id')['customer_name'].last()
 
     elif method == 'list':
-        names_lookup = df.groupby('user_id')['full_name'].apply(list)
+        names_lookup = df.groupby('user_id')['customer_name'].apply(list)
+
+    else:
+        return None
 
     return names_lookup
 
