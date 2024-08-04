@@ -52,11 +52,20 @@ In order to run inference on a batch of samples / do retroscoring, please follow
 
   - If parameter <code>test_mode = True</code>, it will expect column <code>label</code> (digit) with the ground truth and it will calculate main metrics (accuracy, precision, recall, f1 score). It will also output confusion matrix.
   - If parameter <code>test_mode = False</code> (default), it will output only df with prediction results.
-7. 
 
 ### 2. Retraining the model
-...
+If you wish to retrain the model on new data, you can find train functions in these files:
 
+- <code>models/NLP/bert_training.py</code> for BERT
+- <code>models/CV/mobilenet_training.py</code> for MobileNet
+- <code>models/ensemble.py</code> for the model ensemble
+
+In order to prepare training data, please follow the steps 1-3 from p. 1 (retroscoring).
+
+In order to test the models, please run the following files with parameter <code>test_mode = True</code>:
+
+- <code>models/NLP/bert_testing.py</code> for BERT
+- <code>models/CV/mobilenet_testing.py</code> for MobileNet 
 
 ### 3. Adding / removing document categories
 
