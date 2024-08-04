@@ -28,7 +28,7 @@ def matching_category(input_category: str, predicted_category: str) -> bool:
     return input_category == predicted_category
 
 
-def matching_name(input_name: str, text: str, threshold: int = 80, verbose: bool = True):
+def matching_name(input_name: str, text: str, threshold: float = .65, verbose: bool = True):
     """
     Checking if uploaded document contains name of the customer
 
@@ -58,13 +58,12 @@ def matching_name(input_name: str, text: str, threshold: int = 80, verbose: bool
     for name_part in name_preprocessed:
         match_score = fuzz.partial_ratio(name_part, text)
         matches[name_part] = round(match_score, 2)
-        if match_score >= threshold:
-            total_score += match_score
+        total_score += match_score
 
     total_score /= (100 * len(name_preprocessed))
-    found_name = total_score > .6
+    found_name = total_score > threshold
     if verbose:
-        print(f'Same customer: {found_name} (confidence level: {total_score :.0%})')
+        print(f'Same customer: {found_name} (confidence level for recognized parts: {total_score :.0%})')
         print(f'Parts of the name recognized: {matches}')
 
     return found_name, matches, total_score
