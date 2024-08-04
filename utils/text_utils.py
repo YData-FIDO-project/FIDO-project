@@ -107,5 +107,35 @@ def compiling_dataframe() -> pd.DataFrame:
     pass
 
 
-def combining_all_names():
-    pass
+def combining_all_names(df: pd.DataFrame, method: str = 'first')  -> pd.Series:
+
+    """
+    This function is not called in the project,
+    but can be used for combining all customer names together in a full name
+
+    :param df: df with customer names
+    (assumes columns 'user_id', 'firstname', 'middlename' and 'lastname'
+    :param method: "first" (returning first instance), "last" (returnin last instance)
+    or full (returning a list)
+
+    :returns: pd.Series with the full_name (indexed by user_id)
+    """
+
+    name_cols = ['firstname', 'middlename', 'lastname']
+    df['full_name'] = (df
+                       .apply(lambda x: ' '.join(x[name_cols].dropna()), axis=1)
+                       .replace({r'\s+': ' '}, regex=True)
+                       .str.upper()
+                       )
+
+    if method == 'first':
+        names_lookup = df.groupby('user_id')['full_name'].first()
+
+    elif method == 'last':
+        names_lookup = df.groupby('user_id')['full_name'].last()
+
+    elif method == 'list':
+        names_lookup = df.groupby('user_id')['full_name'].apply(list)
+
+    return names_lookup
+
