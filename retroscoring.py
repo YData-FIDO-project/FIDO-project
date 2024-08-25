@@ -45,11 +45,12 @@ def main(df: pd.DataFrame, test_mode: bool = False,
 
     # handling rare categories
     rare_categories = ['form_3', 'property_rate', 'mortgage_statement', 'form_4']
-    answer = input('Remove rare categories for manual labeling (Y/N)?')
-    if answer.strip().lower().startswith('y'):
-        df_rare = df[df['ground_truth'].isin(rare_categories)]
-        df = df[~df['ground_truth'].isin(rare_categories)]
-        print(f'New df dimensions: {df.shape}')
+    if 'ground_truth' in df.columns:
+        answer = input('Remove rare categories for manual labeling (Y/N)?')
+        if answer.strip().lower().startswith('y'):
+            df_rare = df[df['ground_truth'].isin(rare_categories)]
+            df = df[~df['ground_truth'].isin(rare_categories)]
+            print(f'New df dimensions: {df.shape}')
     else:
         df_rare = pd.DataFrame()
 
@@ -71,7 +72,9 @@ def main(df: pd.DataFrame, test_mode: bool = False,
     df_ensemble = ensemble_testing(df_nlp=df_nlp, df_cv=df_cv, test_mode=test_mode)
 
     # category matching
-    df_ensemble['category_is_correct'] = df_ensemble['ground_truth'] == df_ensemble['final_prediction']
+    if 'ground_truth' in df_ensemble.columns:
+        df_ensemble['category_is_correct'] = \
+            df_ensemble['ground_truth'] == df_ensemble['final_prediction']
 
     # name matching
     # a wrapper function to unpack the results

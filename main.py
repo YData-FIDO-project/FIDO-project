@@ -8,7 +8,7 @@ Date: 2024-08-04
 import fire
 import pandas as pd
 
-from consts_and_weights.categories import ALL_CATEGORIES_LIST
+from consts_and_weights.categories import *
 from utils.AWS_utils import downloading_image_from_s3
 from utils.text_utils import image_to_text_pipeline
 from utils.pdf_utils import *
@@ -39,22 +39,13 @@ def main(img_uri: str, key_id: str, secret_access_key: str,
     """
 
     # initial checks
-    input_category = input_category.lower().replace(' ', '_')  # same format
-    if input_category not in ALL_CATEGORIES_LIST:
-        print(f'Unfamiliar category: {input_category}. Please review this document manually.')
+    input_category = input_category.strip().replace(' ', '_')  # same format
+    if input_category not in CATEGORIES_AND_TYPES_DICT.keys():
+        print(f'Unfamiliar type: {input_category}. Please review this document manually.')
         return
 
     # storing metadata
     img_info = {'uri': img_uri, 'input_category': input_category, 'customer_name': customer_name}
-
-    # handling rare categories
-    rare_categories = ['form_3', 'property_rate', 'mortgage_statement', 'form_4']
-    if input_category in rare_categories:
-        answer = input(
-            f'Input belongs to a minority category. Manual review suggested. '
-            f'Continue with the model prediction (Y/N)?')
-        if not answer.strip().lower().startswith('y'):
-            return
 
     # downloading the file from AWS
     local_path_to_image, img_name = downloading_image_from_s3(
@@ -137,7 +128,7 @@ def main(img_uri: str, key_id: str, secret_access_key: str,
 
     # category matching
     category_match = matching_category(
-        input_category=input_category,
+        input_type=input_category,
         predicted_category=df_ensemble["prediction_cat_name"][0]
     )
     img_info['category_is_correct'] = category_match
