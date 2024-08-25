@@ -3,6 +3,7 @@ Inference on BERT model
 """
 import torch
 from transformers import BertTokenizer
+import time
 
 from models.NLP.BERT_classifier import BERTClassifier
 from consts_and_weights.labels import CATEGORY_NAME_DICT
@@ -56,6 +57,8 @@ def bert_inference(document: str, path_to_weights: str = PATH_TO_WEIGHTS,
     attention_mask = inputs['attention_mask'].to(device)
     print(f'Tokenized input file')
 
+    since = time.time()
+
     with torch.no_grad():
         outputs = model(input_ids=input_ids, attention_mask=attention_mask)
         softmax_outputs = torch.nn.functional.softmax(outputs, dim=1)
@@ -64,6 +67,8 @@ def bert_inference(document: str, path_to_weights: str = PATH_TO_WEIGHTS,
         predicted_category = probabilities.argmax()
         probability = probabilities[predicted_category]
 
+    runtime = time.time() - since
     print(f'Prediction: {label_dict[predicted_category]} ({probability :,.3f}) ')
+    print(f'NLP inference runtime: {runtime // 60 :,.0f} m {runtime % 60 :,.1f} s')
 
     return predicted_category, probability

@@ -4,6 +4,7 @@ Inference on MobileNet model
 from PIL import Image
 import torch
 from torchvision import transforms
+import time
 
 from models.CV.MobileNet_classifier import loading_mobilenet
 from consts_and_weights.labels import CATEGORY_NAME_DICT
@@ -53,6 +54,8 @@ def mobilenet_inference(path_to_image: str,
 
     model.eval()
 
+    since = time.time()
+
     with torch.no_grad():
         outputs = model(inputs)
         softmax_outputs = torch.nn.functional.softmax(outputs, dim=1)
@@ -61,7 +64,9 @@ def mobilenet_inference(path_to_image: str,
         predicted_category = probabilities.argmax(1)[0]
         probability = probabilities[0][predicted_category]
 
+    runtime = time.time() - since
     print(f'Prediction: {label_dict[predicted_category]} ({probability :,.3f}) ')
+    print(f'CV inference runtime: {runtime // 60 :,.0f} m {runtime % 60 :,.1f} s')
 
     return predicted_category, probability
 
