@@ -4,28 +4,28 @@ Storing all helper functions
 from rapidfuzz import fuzz
 import re
 
-from consts_and_weights.categories import ALL_CATEGORIES_LIST
+from consts_and_weights.categories import *
 
 
-def matching_category(input_category: str, predicted_category: str) -> bool:
+def matching_category(input_type: str, predicted_category: str) -> bool:
     """
     Checking if document was uploaded with the right category.
 
-    :param input_category: category under which the document was uploaded
+    :param input_type: category under which the document was uploaded
     :param predicted_category: prediction from our model ensemble
 
     :returns: True / False (bool)
     """
 
     # preprocessing category names
-    input_category, predicted_category = input_category.strip().lower().replace(' ', '_'),\
-                                         predicted_category.strip().lower().replace(' ', '_')
+    input_type, predicted_category = input_type.strip().replace(' ', '_'), \
+                                     predicted_category.strip().lower().replace(' ', '_')
 
     # asserting that all categories are known to the model
-    assert input_category in ALL_CATEGORIES_LIST, "Unfamiliar input category"
+    assert input_type in ['POA', 'POE']
     assert predicted_category in ALL_CATEGORIES_LIST, "Unfamiliar predicted category"
 
-    return input_category == predicted_category
+    return predicted_category in CATEGORIES_AND_TYPES_DICT[input_type]
 
 
 def matching_name(input_name: str, text: str, threshold: float = .65, verbose: bool = True):
