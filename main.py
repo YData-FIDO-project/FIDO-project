@@ -7,6 +7,7 @@ Date: 2024-08-04
 
 import fire
 import pandas as pd
+import time
 
 from consts_and_weights.categories import *
 from utils.AWS_utils import downloading_image_from_s3
@@ -37,6 +38,8 @@ def main(img_uri: str, key_id: str, secret_access_key: str,
 
     :returns: df with full image info + extracted text + model ensemble prediction
     """
+
+    since = time.time()
 
     # initial checks
     input_category = input_category.strip().replace(' ', '_')  # same format
@@ -153,7 +156,10 @@ def main(img_uri: str, key_id: str, secret_access_key: str,
     # save file with results locally
     final_file_path = os.path.join(local_dir, 'df_results.csv')
     df_final.to_csv(final_file_path, index=False)
+
+    runtime = time.time() - since
     print(f'Results saved: {final_file_path}')
+    print(f'Time elapsed: {runtime // 60 :,.0f} m {runtime % 60 :,.1f} s')
 
 
 if __name__ == '__main__':
